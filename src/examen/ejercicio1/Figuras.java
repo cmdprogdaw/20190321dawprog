@@ -2,7 +2,7 @@ package examen.ejercicio1;
 
 import java.awt.Color;
 
-public abstract class Figuras {
+public abstract class Figuras implements Comparable<Figuras> {
 	private Color color;
 	private double x;
 	private double y;
@@ -108,4 +108,12 @@ public abstract class Figuras {
 				+ "]";
 	}
 	
+	@Override
+	public int compareTo(Figuras e) {
+		if (getArea() < e.getArea())
+			return -1;
+		else if (getArea() > e.getArea())
+			return 1;
+		return 0;
+	}
 }
