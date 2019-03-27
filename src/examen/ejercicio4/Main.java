@@ -12,14 +12,17 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Scanner in = new Scanner(System.in);
 		Scanner scanner;
-		Map<String, Integer> map = new HashMap<>();
-		String operacion;
-		String nombre;
-		String respuesta;
-		int n;
-		int contacto = 0;
+//		Map<String, Integer> map = new HashMap<>();
+//		String operacion;
+//		String nombre;
+//		String respuesta;
+//		int n;
+//		int contacto = 0;
 		boolean fin = false;
 		String token;
+		
+		System.out.println("Introduce una operacion:");
+		token = in.nextLine();
 		
 		while (!fin) {
 			scanner = new Scanner(in.nextLine());
@@ -29,9 +32,11 @@ public class Main {
 				case 0:
 					try {
 						token = scanner.skip("\\*sbuscar\\s*|\\s*fin\\s$|\\s*(\\w+\\s*)+").match().group();
-						
+						if(token.equalsIgnoreCase("\\*sbuscar\\s*")) {
+
+						} 
 					} catch (NoSuchElementException e) {
-						
+						System.out.println("No existe esta operacion");
 					}
 					
 					break;
