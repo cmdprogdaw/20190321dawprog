@@ -28,7 +28,7 @@ public class Main {
 				switch (estado) {
 				case 0:
 					try {
-						token = scanner.skip("").match().group();
+						token = scanner.skip("\\*sbuscar\\s*|\\s*fin\\s$|\\s*(\\w+\\s*)+").match().group();
 						
 					} catch (NoSuchElementException e) {
 						
