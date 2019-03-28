@@ -1,100 +1,91 @@
 package examen.ejercicio4;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		Scanner in = new Scanner(System.in);
-		Scanner scanner;
-//		Map<String, Integer> map = new HashMap<>();
-//		String operacion;
-//		String nombre;
-//		String respuesta;
-//		int n;
-//		int contacto = 0;
+		Map<String, String> agenda = new HashMap<>();
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		boolean fin = false;
-		String token;
 		
-		System.out.println("Introduce una operacion:");
-		token = in.nextLine();
-		
-		while (!fin) {
-			scanner = new Scanner(in.nextLine());
+		do {
+			System.out.print("> "); //token para que se espere un comando
+			Scanner s = new Scanner(in.readLine());
 			int estado = 0;
+			String token;
+			String nombre = "";
 			while (estado != 5) {
 				switch (estado) {
 				case 0:
 					try {
-						token = scanner.skip("\\*sbuscar\\s*|\\s*fin\\s$|\\s*(\\w+\\s*)+").match().group();
-						if(token.equalsIgnoreCase("\\*sbuscar\\s*")) {
-
-						} 
-					} catch (NoSuchElementException e) {
-						System.out.println("No existe esta operacion");
+						token = s.skip("fin|buscar|[a-zA-ZáéíóúÁÉÍÓÚ]+\\s+([a-zA-ZáéíóúÁÉÍÓÚ]+\\s+)*[a-zA-ZáéíóúÁÉÍÓÚ]+|[a-zA-ZáéíóúÁÉÍÓÚ]+").match().group(); //match contiene informacion acerca del trozo del token que se ha escaneado y para retornarlo se invoca group
+//						token = s.skip("fin|buscar|[^:-]+").match().group();
+						if (token.equals("fin")) { 
+							estado = 5;
+							fin = true;
+						}else if (token.equals("buscar")) 
+							estado = 2;
+						else {
+							nombre = token;
+							estado = 1;
+						}
+					} catch (NoSuchElementException e) { //not checked, hay que capturarla si o si
+						System.out.println("Se esperaba 'buscar' o 'fin' o un nombre");
+						estado = 5;
 					}
-					
+
 					break;
 				case 1:
-
+					try {
+						s.skip("-");
+						estado = 3;
+					} catch (NoSuchElementException e) {
+						System.out.println("Se esperaba '-'");
+						estado = 5;
+					}
 					break;
 				case 2:
-
+					try {
+						s.skip(":");
+						estado = 4;
+					} catch (NoSuchElementException e) {
+						System.out.println("Se esperaba ':'");
+						estado = 5;
+					}
 					break;
 				case 3:
-
+					try {
+						token = s.skip("\\d{9}").match().group();
+						agenda.put(nombre, token);
+						estado = 5;
+					} catch (NoSuchElementException e) {
+						System.out.println("Se esperaba un telefono");
+						estado = 5;
+					}
 					break;
 				case 4:
-
+					try {
+						token = s.skip("[a-zA-ZáéíóúÁÉÍÓÚ]+\\s+([a-zA-ZáéíóúÁÉÍÓÚ]+\\s+)*[a-zA-ZáéíóúÁÉÍÓÚ]+|[a-zA-ZáéíóúÁÉÍÓÚ]+").match().group();
+						String telefono = agenda.get(token); //te da el telefono de ese token que es el nombre
+						if (telefono != null) 
+							System.out.println(token + " -> " + telefono);
+						else
+							System.out.println(token + " no se encuentra en la agenda");
+						estado = 5;
+					} catch (NoSuchElementException e) {
+						System.out.println("Se esperaba un nombre");
+						estado = 5;
+					}
 					break;
 				}
 			}
-		}
+		} while (!fin);
+
 	}
 }
-/*
-		do {
-			do {
-				System.out.println("Introduce la operacion que quieras");
-				operacion = in.nextLine();
-				Pattern p = Pattern.compile("\\*sbuscar\\s*|\\s*fin\\s$|\\s*(\\w+\\s*)+");
-				Matcher m = p.matcher(operacion);
-				if (!m.matches()) {
-					throw new Exception("La operacion no es posible");
-				} else if (m.matches()) {
-					if (m.equals("\\*sagregar\\s*"))
-						if (contacto == 0) {
-							System.out.print("Introduce el nombre de tu primer contacto: ");
-							nombre = in.nextLine();
-							System.out.print("Introduzca su numero: ");
-							n = in.nextInt();
-							map.put(nombre, n);
-							System.out.println(map);
-						} else {
-							System.out.println("Introduce un nuevo contacto: ");
-							nombre = in.nextLine();
-							System.out.print("Introduzca su numero: ");
-							n = in.nextInt();
-							if (map.containsKey(nombre)) {
-								map.remove(n);
-								map.put(nombre, n);
-							} else
-								map.put(nombre, n);
-
-							map.put(nombre, n);
-							System.out.println(map);
-						}
-				}
-
-			} while (m.matches());
-			System.out.println("¿Quiere realizar otra operacion?");
-			respuesta = in.next();
-		} while (!respuesta.equalsIgnoreCase("\\s*fin\\s$"));
-	}
-}
-   \\*sbuscar\\s*|\\s*fin\\s$|\\s*(\\w+\\s*)+                        string.trim*/
